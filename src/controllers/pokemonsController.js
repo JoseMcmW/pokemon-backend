@@ -37,7 +37,6 @@ const createPokemonController = async (req, res) => {
 const pokemonsByIdController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log('id :>> ', id);
     const detailPokemon = await pokemonsByIdModule(id);
     return res.status(200).send(detailPokemon);
   } catch (error) {
