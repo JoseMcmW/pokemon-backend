@@ -4,10 +4,16 @@ const { BASE_URL } = process.env;
 
 const pokemonsService = async () => {
   try {
-    const { data } = await axios.get(`${BASE_URL}/pokemon`); //Consumimos la API para obtener todos los pokemones.
+    let arrayPokemons = [];
+    let url = `${BASE_URL}/pokemon`;
+    for (let i = 1; i <= 7; i++) {
+      const { data: pokemons } = await axios.get(url); //Consumimos la API para obtener todos los pokemones.
+      arrayPokemons.push(...pokemons.results);
+      url = pokemons.next;
+    }
 
     const allPokemons = await Promise.all(
-      data.results.map(
+      arrayPokemons.map(
         (pokemon) => getStats(pokemon) //Pasamos por parametro la data a la funcion getStats
       )
     );
