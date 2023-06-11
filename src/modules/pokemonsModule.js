@@ -36,11 +36,13 @@ const pokemonsModule = async () => {
 }
 
 const pokemonsByNameModule = async (name) => {
+  console.log('name :>> ', name);
   try {
     const searchPokemonDb = await findPokemonByName(name.toLowerCase());
 
     if(searchPokemonDb.length !== 0) {
       return searchPokemonDb.map((poke) => {
+        console.log('poke :>> ', poke);
         return {
           id: poke.id,
           name: poke.name,
@@ -51,7 +53,7 @@ const pokemonsByNameModule = async (name) => {
           speed: poke.speed,
           height: poke.height,
           weight: poke.weight,
-          type: poke.types
+          type: poke.Types.map((type) => type.name)
         }
       })
     }
@@ -77,9 +79,9 @@ const pokemonsByNameModule = async (name) => {
   }
 }
 
-const createPokemonModule = async (pokemon) => {
+const createPokemonModule = async (body) => {
   try {
-    return await pokemonCreate(pokemon)
+    return await pokemonCreate(body)
   } catch (error) {
     throw error;
     }
@@ -88,8 +90,24 @@ const createPokemonModule = async (pokemon) => {
 const pokemonsByIdModule = async (id) => {
 	try {
 		if(id.includes("-")) {
+
 			const detailPokemonDb = await findPokemonById(id)
-			return detailPokemonDb;
+      const pokeFromDB = [detailPokemonDb].map((d) => {
+        return {
+          id: d.id,
+          name: d.name,
+          image: d.image,
+          attack: d.attack,
+          defense: d.defense,
+          speed: d.speed,
+          height: d.height,
+          weight: d.weight,
+          type: d.Types.map(
+            (t) => t.name.charAt(0).toUpperCase() + t.name.slice(1)
+          ),
+        };
+      });
+      return pokeFromDB;
 		}
 
 		const detailPokemonApi = await pokemonByIdService(id);
