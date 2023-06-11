@@ -27,8 +27,8 @@ const pokemonsByNameController = async (req, res) => {
 const createPokemonController = async (req, res) => {
   try {
     const { body } = req;
-    await createPokemonModule(body);
-    res.status(200).send({ message: "Pokemon create successfully." });
+    const savePokemon = await createPokemonModule(body);
+    res.status(200).send(savePokemon);
   } catch (error) {
     res.status(error.status || 500).send({ error: error.message });
   }

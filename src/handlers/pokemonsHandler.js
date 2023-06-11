@@ -1,9 +1,18 @@
-const { Pokemons, Type } = require("../db");
+const { Pokemons, Types } = require("../db");
 const { Op } = require("sequelize");
 
-const pokemonCreate = async (pokemon) => {
+const pokemonCreate = async (body) => {
   try {
-    return await Pokemons.create(pokemon);
+    const savePokemon = await Pokemons.create(body);
+    const findType = await Types.findAll({
+      where: {
+        name: {
+          [Op.in]: body.types,
+        },
+      },
+    });
+    savePokemon.addType(findType);
+    return savePokemon;
   } catch (error) {
     throw error;
   }
@@ -11,7 +20,15 @@ const pokemonCreate = async (pokemon) => {
 
 const pokemonsDB = async () => {
   try {
-    return await Pokemons.findAll();
+    const pokemonFromDB = await Pokemons.findAll({
+      include: [
+        {
+          model: Types,
+          attributes: ["name"],
+        },
+      ],
+    });
+    return pokemonFromDB;
   } catch (error) {
     throw error;
   }
@@ -19,7 +36,19 @@ const pokemonsDB = async () => {
 
 const findPokemonById = async (id) => {
   try {
-    return await Pokemons.findByPk(id);
+    console.log('id :>> ', id);
+    const findByIdDB = await Pokemons.findOne({
+      where: {
+        id: id,
+      },
+      include: [
+        {
+          model: Types,
+          attributes: ["name"],
+        },
+      ],
+    });
+    return findByIdDB;
   } catch (error) {
     throw error;
   }
@@ -27,13 +56,20 @@ const findPokemonById = async (id) => {
 
 const findPokemonByName = async (name) => {
   try {
-    return await Pokemons.findAll({
+    const searchByName = await Pokemons.findAll({
       where: {
         name: {
           [Op.iLike]: `%${name}%`,
         },
       },
+      include: [
+        {
+          model: Types,
+          attributes: ["name"],
+        },
+      ],
     });
+    return searchByName;
   } catch (error) {
     throw error;
   }
