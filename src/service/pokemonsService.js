@@ -2,19 +2,20 @@ const axios = require("axios");
 require("dotenv").config();
 const { BASE_URL } = process.env;
 
+//Consumimos la API con axios para traer todos los pokemones
 const pokemonsService = async () => {
   try {
     let arrayPokemons = [];
     let url = `${BASE_URL}/pokemon`;
     for (let i = 1; i <= 7; i++) {
-      const { data: pokemons } = await axios.get(url); //Consumimos la API para obtener todos los pokemones.
+      const { data: pokemons } = await axios.get(url);
       arrayPokemons.push(...pokemons.results);
       url = pokemons.next;
     }
 
     const allPokemons = await Promise.all(
       arrayPokemons.map(
-        (pokemon) => getStats(pokemon) //Pasamos por parametro la data a la funcion getStats
+        (pokemon) => getStats(pokemon)
       )
     );
     return allPokemons;
@@ -23,6 +24,7 @@ const pokemonsService = async () => {
   }
 };
 
+//Helper: extraemos key y value que usaremos del obj stats (ho, attack, defense, speed).
 const stats = (statsPokemon) => {
   //Toma la spropiedades que usaremos del obj stats.
   const statObject = {};
@@ -32,19 +34,18 @@ const stats = (statsPokemon) => {
   return statObject;
 };
 
+//Helper: extraemos el value de la propiedad name del obj type, en el array de obj types.
 const types = (slotType) => {
-  //
   return slotType.map((type) => {
     return type.type.name;
   });
 };
 
+//Ingresamos a la url de la key url, para ingresar a cada uno de los pokemones.
 const getStats = async (charStats) => {
-  //charStats es la data.
   try {
-    const { data } = await axios.get(`${charStats.url}`); //Ingresamos a la URL de cada personaje
+    const { data } = await axios.get(`${charStats.url}`);
     const pokemon = {
-      //Creamos el objeto con el personaje
       id: data.id,
       name: data.name,
       image: data.sprites.other.dream_world.front_default,
@@ -59,6 +60,7 @@ const getStats = async (charStats) => {
   }
 };
 
+//Traemos a todos los pokemones, por query a traves de la ruta indicada.
 const pokemonByNameService = async (name) => {
   try {
     const { data } = await axios.get(`${BASE_URL}/pokemon/${name}`);
@@ -77,6 +79,7 @@ const pokemonByNameService = async (name) => {
   }
 };
 
+//Traemos a todos los pokemones por params con el id.
 const pokemonByIdService = async (id) => {
   try {
     const { data } = await axios.get(`${BASE_URL}/pokemon/${id}`);
@@ -98,5 +101,5 @@ const pokemonByIdService = async (id) => {
 module.exports = {
   pokemonsService,
   pokemonByNameService,
-  pokemonByIdService
+  pokemonByIdService,
 };
