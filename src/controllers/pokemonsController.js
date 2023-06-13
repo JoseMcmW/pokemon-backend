@@ -2,9 +2,12 @@ const {
   pokemonsModule,
   createPokemonModule,
   pokemonsByIdModule,
-  pokemonsByNameModule
+  pokemonsByNameModule,
+  deletePokemonModule,
+  updatePokemonModule,
 } = require("../modules/pokemonsModule");
 
+//Todos los pokemones
 const pokemonsController = async (req, res) => {
   try {
     const pokemones = await pokemonsModule();
@@ -44,9 +47,32 @@ const pokemonsByIdController = async (req, res) => {
   }
 };
 
+const deletePokemonController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await deletePokemonModule(id);
+    res.status(200).send({ message: "Pokemon deleted successfully" });
+  } catch (error) {
+    return res.status(error.status || 500).send({ error: error.message });
+  }
+};
+
+const updatePokemonController = async (req, res) => {
+  const { id } = req.params;
+  const { body } = req;
+  try {
+    await updatePokemonModule(id, body);
+    res.status(200).send({ message: "Pokemon updated successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   pokemonsController,
   createPokemonController,
   pokemonsByIdController,
-  pokemonsByNameController
+  pokemonsByNameController,
+  deletePokemonController,
+  updatePokemonController,
 };

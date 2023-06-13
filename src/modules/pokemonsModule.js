@@ -1,20 +1,22 @@
 const {
-	pokemonsService,
+  pokemonsService,
   pokemonByNameService,
-  pokemonByIdService
-} = require('../service/pokemonsService');
+  pokemonByIdService,
+} = require("../service/pokemonsService");
 const {
-	pokemonsDB,
-	pokemonCreate,
-	findPokemonById,
-  findPokemonByName
-} = require('../handlers/pokemonsHandler');
+  pokemonsDB,
+  pokemonCreate,
+  findPokemonById,
+  findPokemonByName,
+  deletePokemonHandler,
+  updatePokemonHandler,
+} = require("../handlers/pokemonsHandler");
 
 const pokemonsModule = async () => {
   try {
     const pokemonsFromDb = await pokemonsDB();
     let pokemonsApi = await pokemonsService();
-    const concatData = [...pokemonsFromDb, ...pokemonsApi]
+    const concatData = [...pokemonsFromDb, ...pokemonsApi];
     const allPokemons = concatData.map((poke) => {
       return {
         id: poke.id,
@@ -26,23 +28,21 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.types
-      }
-    })
-      return allPokemons;
-    } catch (error) {
-      throw error;
+        type: poke.types,
+      };
+    });
+    return allPokemons;
+  } catch (error) {
+    throw error;
   }
-}
+};
 
 const pokemonsByNameModule = async (name) => {
-  console.log('name :>> ', name);
   try {
     const searchPokemonDb = await findPokemonByName(name.toLowerCase());
 
-    if(searchPokemonDb.length !== 0) {
+    if (searchPokemonDb.length !== 0) {
       return searchPokemonDb.map((poke) => {
-        console.log('poke :>> ', poke);
         return {
           id: poke.id,
           name: poke.name,
@@ -53,9 +53,9 @@ const pokemonsByNameModule = async (name) => {
           speed: poke.speed,
           height: poke.height,
           weight: poke.weight,
-          type: poke.Types.map((type) => type.name)
-        }
-      })
+          type: poke.Types.map((type) => type.name),
+        };
+      });
     }
 
     const searchByNameApi = await pokemonByNameService(name.toLowerCase());
@@ -77,21 +77,20 @@ const pokemonsByNameModule = async (name) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
 const createPokemonModule = async (body) => {
   try {
-    return await pokemonCreate(body)
+    return await pokemonCreate(body);
   } catch (error) {
     throw error;
-    }
-}
+  }
+};
 
 const pokemonsByIdModule = async (id) => {
-	try {
-		if(id.includes("-")) {
-
-			const detailPokemonDb = await findPokemonById(id)
+  try {
+    if (id.includes("-")) {
+      const detailPokemonDb = await findPokemonById(id);
       const pokeFromDB = [detailPokemonDb].map((d) => {
         return {
           id: d.id,
@@ -108,19 +107,36 @@ const pokemonsByIdModule = async (id) => {
         };
       });
       return pokeFromDB;
-		}
+    }
 
-		const detailPokemonApi = await pokemonByIdService(id);
-		return detailPokemonApi;
+    const detailPokemonApi = await pokemonByIdService(id);
+    return detailPokemonApi;
+  } catch (error) {
+    throw error;
+  }
+};
 
-	} catch (error) {
-		throw error;
-	}
-}
+const deletePokemonModule = async (id) => {
+  try {
+    await deletePokemonHandler(id);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updatePokemonModule = async (id, body) => {
+  try {
+    await updatePokemonHandler(id, body);
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
   pokemonsModule,
   createPokemonModule,
-	pokemonsByIdModule,
-  pokemonsByNameModule
-}
+  pokemonsByIdModule,
+  pokemonsByNameModule,
+  deletePokemonModule,
+  updatePokemonModule,
+};
