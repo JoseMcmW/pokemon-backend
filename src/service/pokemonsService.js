@@ -48,7 +48,7 @@ const getStats = async (charStats) => {
     const pokemon = {
       id: data.id,
       name: data.name,
-      image: data.sprites.other.dream_world.front_default,
+      image: data.sprites.other.home.front_default,
       ...stats(data.stats),
       height: data.height,
       weight: data.weight,
