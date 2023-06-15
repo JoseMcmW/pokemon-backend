@@ -28,7 +28,7 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.types,
+        type: poke.Types?.map((type) => type.name),
       };
     });
     return allPokemons;
