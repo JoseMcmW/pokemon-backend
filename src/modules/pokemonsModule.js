@@ -16,10 +16,11 @@ const pokemonsModule = async () => {
   try {
     const pokemonsFromDb = await pokemonsDB();
     let pokemonsApi = await pokemonsService();
+    console.log('pokemonsApi :>> ', pokemonsApi);
     const allPokemonsDB = pokemonsFromDb.map((poke) => {
       return {
         id: poke.id,
-        name: poke.name,
+        name: poke.name.charAt(0).toUpperCase() + poke.name.slice(1),
         image: poke.image,
         life: poke.hp,
         attack: poke.attack,
@@ -27,13 +28,14 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.Types.map((type) => type.name),
+        type: poke.Types.map(
+          (type) => type.name.charAt(0).toUpperCase() + type.name.slice(1)),
       };
     });
     const allPokemonsApi = pokemonsApi.map((poke) => {
       return {
         id: poke.id,
-        name: poke.name,
+        name: poke.name.charAt(0).toUpperCase() + poke.name.slice(1),
         image: poke.image,
         life: poke.hp,
         attack: poke.attack,
@@ -41,7 +43,8 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.types,
+        type: poke.types.map(
+          (type) => type.charAt(0).toUpperCase() + type.slice(1)),
       };
     });
     const allPokemons = allPokemonsDB.concat(allPokemonsApi)
