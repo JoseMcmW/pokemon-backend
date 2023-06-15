@@ -16,8 +16,7 @@ const pokemonsModule = async () => {
   try {
     const pokemonsFromDb = await pokemonsDB();
     let pokemonsApi = await pokemonsService();
-    const concatData = [...pokemonsFromDb, ...pokemonsApi];
-    const allPokemons = concatData.map((poke) => {
+    const allPokemonsDB = pokemonsFromDb.map((poke) => {
       return {
         id: poke.id,
         name: poke.name,
@@ -28,9 +27,24 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.Types?.map((type) => type.name),
+        type: poke.Types.map((type) => type.name),
       };
     });
+    const allPokemonsApi = pokemonsApi.map((poke) => {
+      return {
+        id: poke.id,
+        name: poke.name,
+        image: poke.image,
+        life: poke.hp,
+        attack: poke.attack,
+        defense: poke.defense,
+        speed: poke.speed,
+        height: poke.height,
+        weight: poke.weight,
+        type: poke.types,
+      };
+    });
+    const allPokemons = allPokemonsDB.concat(allPokemonsApi)
     return allPokemons;
   } catch (error) {
     throw error;
