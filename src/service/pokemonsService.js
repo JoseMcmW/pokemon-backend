@@ -37,7 +37,7 @@ const stats = (statsPokemon) => {
 //Helper: extraemos el value de la propiedad name del obj type, en el array de obj types.
 const types = (slotType) => {
   return slotType.map((type) => {
-    return type.type.name;
+    return type.type.name.charAt(0).toUpperCase() + type.type.name.slice(1);
   });
 };
 
@@ -67,7 +67,7 @@ const pokemonByNameService = async (name) => {
     const pokemon = {
       id: data.id,
       name: data.name,
-      image: data.sprites.other.dream_world.front_default,
+      image: data.sprites.other.home.front_default,
       ...stats(data.stats),
       height: data.height,
       weight: data.weight,
@@ -85,8 +85,8 @@ const pokemonByIdService = async (id) => {
     const { data } = await axios.get(`${BASE_URL}/pokemon/${id}`);
     const pokemon = {
       id: data.id,
-      name: data.name,
-      image: data.sprites.other.dream_world.front_default,
+      name: data.name.charAt(0).toUpperCase() + data.name.slice(1),
+      image: data.sprites.other.home.front_default,
       ...stats(data.stats),
       height: data.height,
       weight: data.weight,
