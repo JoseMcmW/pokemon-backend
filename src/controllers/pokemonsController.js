@@ -31,7 +31,7 @@ const createPokemonController = async (req, res) => {
   try {
     const { body } = req;
     const savePokemon = await createPokemonModule(body);
-    res.status(200).send(savePokemon);
+    res.status(201).send(savePokemon);
   } catch (error) {
     res.status(error.status || 500).send({ error: error.message });
   }
