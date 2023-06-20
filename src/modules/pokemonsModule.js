@@ -97,10 +97,6 @@ const pokemonsByNameModule = async (name) => {
 
 const createPokemonModule = async (body) => {
   try {
-    if (![".png", ".jpg", "jpeg"].includes(body.image)) {
-      body.image =
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freeiconspng.com%2Fimages%2Fno-image-icon&psig=AOvVaw1VnnaAMPGMWp8m8kr8JAca&ust=1687295480325000&source=images&cd=vfe&ved=2ahUKEwjQh5TPn9D_AhXfupUCHRD3AgoQjRx6BAgAEAw";
-    }
     const savePokemon = await pokemonCreate(body);
     return savePokemon;
   } catch (error) {
