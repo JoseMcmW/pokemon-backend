@@ -16,11 +16,10 @@ const pokemonsModule = async () => {
   try {
     const pokemonsFromDb = await pokemonsDB();
     let pokemonsApi = await pokemonsService();
-    const concatData = [...pokemonsFromDb, ...pokemonsApi];
-    const allPokemons = concatData.map((poke) => {
+    const allPokemonsDB = pokemonsFromDb.map((poke) => {
       return {
         id: poke.id,
-        name: poke.name,
+        name: poke.name.charAt(0).toUpperCase() + poke.name.slice(1),
         image: poke.image,
         life: poke.hp,
         attack: poke.attack,
@@ -28,9 +27,26 @@ const pokemonsModule = async () => {
         speed: poke.speed,
         height: poke.height,
         weight: poke.weight,
-        type: poke.types,
+        type: poke.Types.map(
+          (type) => type.name.charAt(0).toUpperCase() + type.name.slice(1)),
       };
     });
+    const allPokemonsApi = pokemonsApi.map((poke) => {
+      return {
+        id: poke.id,
+        name: poke.name.charAt(0).toUpperCase() + poke.name.slice(1),
+        image: poke.image,
+        life: poke.hp,
+        attack: poke.attack,
+        defense: poke.defense,
+        speed: poke.speed,
+        height: poke.height,
+        weight: poke.weight,
+        type: poke.types.map(
+          (type) => type.charAt(0).toUpperCase() + type.slice(1)),
+      };
+    });
+    const allPokemons = allPokemonsDB.concat(allPokemonsApi)
     return allPokemons;
   } catch (error) {
     throw error;
@@ -61,7 +77,7 @@ const pokemonsByNameModule = async (name) => {
     const searchByNameApi = await pokemonByNameService(name.toLowerCase());
 
     if (searchByNameApi) {
-      return {
+      return [{
         id: searchByNameApi.id,
         name: searchByNameApi.name,
         image: searchByNameApi.image,
@@ -72,7 +88,7 @@ const pokemonsByNameModule = async (name) => {
         height: searchByNameApi.height,
         weight: searchByNameApi.weight,
         type: searchByNameApi.types,
-      };
+      }];
     }
   } catch (error) {
     throw error;
@@ -81,7 +97,8 @@ const pokemonsByNameModule = async (name) => {
 
 const createPokemonModule = async (body) => {
   try {
-    return await pokemonCreate(body);
+    const savePokemon = await pokemonCreate(body);
+    return savePokemon;
   } catch (error) {
     throw error;
   }
@@ -97,16 +114,17 @@ const pokemonsByIdModule = async (id) => {
           name: d.name,
           image: d.image,
           attack: d.attack,
+          life: d.life,
           defense: d.defense,
           speed: d.speed,
           height: d.height,
           weight: d.weight,
-          type: d.Types.map(
+          types: d.Types.map(
             (t) => t.name.charAt(0).toUpperCase() + t.name.slice(1)
           ),
         };
       });
-      return pokeFromDB;
+      return pokeFromDB[0];
     }
 
     const detailPokemonApi = await pokemonByIdService(id);
