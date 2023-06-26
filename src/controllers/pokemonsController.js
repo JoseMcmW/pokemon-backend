@@ -18,8 +18,8 @@ const pokemonsController = async (req, res) => {
 };
 
 const pokemonsByNameController = async (req, res) => {
+  const { name } = req.query;
   try {
-    const { name } = req.query;
     const pokemonesByName = await pokemonsByNameModule(name);
     res.status(200).send(pokemonesByName);
   } catch (error) {
