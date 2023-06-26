@@ -16,6 +16,7 @@ const pokemonsModule = async () => {
   try {
     const pokemonsFromDb = await pokemonsDB();
     let pokemonsApi = await pokemonsService();
+
     const allPokemonsDB = pokemonsFromDb.map((poke) => {
       return {
         id: poke.id,
@@ -90,6 +91,7 @@ const pokemonsByNameModule = async (name) => {
         type: searchByNameApi.types,
       }];
     }
+
   } catch (error) {
     throw error;
   }
