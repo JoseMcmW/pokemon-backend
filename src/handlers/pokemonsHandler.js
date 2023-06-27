@@ -93,11 +93,33 @@ const deletePokemonHandler = async (id) => {
 
 const updatePokemonHandler = async (id, body) => {
   try {
-    return await Pokemons.update(body, {
+    // Actualiza los datos básicos del Pokémon en la tabla Pokemons
+    await Pokemons.update(body, {
       where: {
-        id,
+        id: id,
       },
     });
+
+    // Encuentra los tipos asociados al Pokémon actual
+    const pokemon = await Pokemons.findByPk(id);
+    const currentTypes = await pokemon.getTypes();
+
+        // Encuentra los tipos en la base de datos que coinciden con los nuevos tipos proporcionados
+        const newTypes = await Types.findAll({
+          where: {
+            name: {
+              [Op.in]: body.types,
+            },
+          },
+        });
+        // Elimina los tipos actuales asociados al Pokémon
+        await pokemon.removeTypes(currentTypes);
+
+        // Asocia los nuevos tipos al Pokémon
+        await pokemon.addTypes(newTypes);
+
+        // Retorna el Pokémon actualizado
+        return pokemon;
   } catch (error) {
     throw error;
   }
